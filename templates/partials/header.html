@@ -1,0 +1,22 @@
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-5">
+        <div class="container-fluid">
+            <a class="navbar-brand mb-0 me-lg-4 h1" href="{% url 'homepage' %}">Photo Gallery</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mt-2 mt-lg-0">
+            <li class="nav-item pb-1 pb-lg-0 px-lg-1">
+            <a class="nav-link" aria-current="page" href="{% url 'contact' %}">Contact</a>
+            </li>
+            </ul>
+        <form class="d-flex my-3 my-lg-0 me-lg-5" action="{% url 'search' %}" method="get" role="search">
+            <label class="visually-hidden" for="search-input">Search photos</label>
+            <input class="form-control rounded-0 border-secondary" id="search-input" type="search" name="query" placeholder="Search photos...">
+            <button class="btn btn-light rounded-0 border-secondary" type="submit">
+                <i class="bi bi-search"></i>
+            </button>
+        </form>
+        </nav>
+    </header>

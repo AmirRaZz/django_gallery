@@ -1,0 +1,121 @@
+{% extends 'mainTemplate.html' %}
+
+{% block title %}List{% endblock  %}
+
+{% block content %}
+<div class="container-lg text-center">
+
+    {% block header_content %}
+    <div class="mb-5">
+        <h1 class="display-4">
+            Photography
+        </h1>
+    </div>
+    {% endblock header_content %}
+
+    {% block sorting_dropdown %}
+    {% if photo_list|length > 2 %}
+    <div class="row justify-content-lg-center pt-4 mt-4">
+        <div class="col-md-10">
+            <div class="dropdown text-end">
+                <button class="btn btn-success btn-sm p-2 dropdown-toggle" id="dropdownMenuButton" type="button" data-bs-toggle="dropdown" aria-expanded="false">Sort by...</button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <li>
+                        {% if sorting == 'default' %}
+                        <a class="dropdown-item active" href="#" aria-current="true">Featured (default)</a>
+                        {% else %}
+                        <a class="dropdown-item" href="{{ request.path }}">Featured (default)</a>
+                        {% endif %}
+                    </li>
+                    <li>
+                        {% if sorting == 'new' %}
+                        <a class="dropdown-item active" href="#" aria-current="true">Newest</a>
+                        {% else %}
+                        <a class="dropdown-item" href="?sort=new">Newest</a>
+                        {% endif %}
+                    </li>
+                    <li>
+                        {% if sorting == 'old' %}
+                        <a class="dropdown-item active" href="#" aria-current="true">Oldest</a>
+                        {% else %}
+                        <a class="dropdown-item" href="?sort=old">Oldest</a>
+                        {% endif %}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% endblock sorting_dropdown %}
+
+    {# Photo listings #}
+    {% if photo_list|length == 0 %}
+    {# Display error message instead of empty photo list #}
+    <div class="my-5 py-5">
+        <p class="fs-5 py-4">Sorry, no photos were found.</p>
+    </div>
+    {% else %}
+        <div class="mt-1 mb-5">
+            <div class="row justify-content-lg-center">
+            {% for photo in photo_list %}
+                <div class="col-lg-5 my-3 my-lg-4 gx-3 mx-lg-3 mx-xxl-5 justify-content-center d-flex">
+                    <div class="border bg-light">
+                        <a href={% url 'photoDetail' slug=photo.slug %}><img src="{{ photo.small_image.url }}" alt="{{ photo.title }}" class="img-fluid"></a>
+                {% if photo.featured %}
+                    <div class="py-1 px-3 bg-success border-top border-bottom border-dark border-1">
+                        <p class="my-0 text-end text-uppercase h6 text-white">Featured</p>
+                    </div>
+                {% else %}
+                    <div class="border-bottom border-success border-4"></div>
+                {% endif %}
+                <p class="pt-4 pb-0 px-3">
+                    <a class="h5 text-dark text-decoration-none" href="{% url 'photoDetail' slug=photo.slug %}">{{ photo.title }}</a>
+                </p>
+                <div class="pb-3 text-success">
+                    <i class="bi bi-calendar-event px-1"></i> {{ photo.date_taken|date:"F Y" }}
+                </div>
+            </div>
+        </div>
+    {% if forloop.counter == 2 or forloop.counter == 4 %} {# 2 photos per row #}
+    </div>
+
+    <div class="row justify-content-lg-center">
+    {% endif %}{% endfor %}
+    </div>
+
+    </div>
+    {% endif %}{# End of `photo_list|length == 0` conditional block #}
+
+    {# Pagination #}
+    {% if page_obj.paginator.num_pages > 1 %}
+    <div class="row justify-content-center d-flex align-items-center mb-5">
+        <div class="col-5 text-end fs-4">
+            <span class="px-3 px-md-5">
+      {% if page_obj.has_previous %}
+        <a class="link-secondary" href="?{% if search_query %}query={{ search_query }}&{% endif %}page=1{% if sorting != 'default' %}&sort={{ sorting }}{% endif %}">&laquo;</a>
+      </span>
+      <span class="px-3 px-md-5">
+        <a class="link-secondary" href="?{% if search_query %}query={{ search_query }}&{% endif %}page={{ page_obj.previous_page_number }}{% if sorting != 'default' %}&sort={{ sorting }}{% endif %}">{{ page_obj.previous_page_number }}</a>
+      {% endif %}
+      </span>
+    </div>
+
+    <div class="col-2 text-center">
+      <span class="h1" aria-current="page">{{ page_obj.number }}</span>
+    </div>
+
+    <div class="col-5 text-start fs-4">
+      <span class="px-3 px-md-5">
+      {% if page_obj.has_next %}
+        <a class="link-secondary" href="?{% if search_query %}query={{ search_query }}&{% endif %}page={{ page_obj.next_page_number }}{% if sorting != 'default' %}&sort={{ sorting }}{% endif %}">{{ page_obj.next_page_number }}</a>
+      </span>
+      <span class="px-3 px-md-5">
+        <a class="link-secondary" href="?{% if search_query %}query={{ search_query }}&{% endif %}page={{ page_obj.paginator.num_pages }}{% if sorting != 'default' %}&sort={{ sorting }}{% endif %}">&raquo;</a>
+      {% endif %}
+      </span>
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock content  %}
